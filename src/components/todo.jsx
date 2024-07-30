@@ -1,11 +1,11 @@
 import React from 'react';
 import Todolist from './todolist';
-const Todo = ({ listToShow }) => {
+const Todo = ({ TodoItems, lists, setLists }) => {
   return (
     <div className='list2show'>
       <h4>
-        {listToShow.map((list, index) => (
-        <Todolist key={index} list={list} />
+        {TodoItems.map((item, index) => (
+          <Todolist key={index} item={item} lists={lists} setLists={setLists} />
         ))}
       </h4>
     </div>

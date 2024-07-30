@@ -1,27 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // import cross from '../images/icon-cross.svg';
 
 const Todolist = (props) => {
-  const [isChecked, setIsChecked] = useState(false);
+  const { item, lists, setLists } = props
 
-  const handleCheckboxClick = () => {
-    setIsChecked(!isChecked);
-  };
-  if (props.lists === 'checked') {
-    console.log('subhanallah')
-  }else if (props.lists !== isChecked){
-    console.log('alhamdulilah')
+  function handleCompleted() {
+    const updatedLists = lists.map((listItem) => {
+      if (listItem.completed === item.completed) {
+        return { ...listItem, completed: !listItem.completed };
+      }
+      return listItem;
+    });
+    setLists(updatedLists);
   }
+
 
   return ( 
     <div className='todolist'>
-        <div className='mark' onClick={handleCheckboxClick}>
-          <input type='checkbox' checked = {isChecked} className='check' readOnly></input>
+        <div className='mark' onClick={handleCompleted}>
+          <input type='checkbox' checked = {""} className='check' readOnly></input>
           <label htmlFor ='check'></label>
         </div>
         <div>
-          <p className={isChecked ? 'checked' : ''}>
-          {props.list.name}
+          <p className={props.item.completed ? 'checked' : ''}>
+          {props.item.name}
           </p>
         </div>
         {/* <div>

@@ -1,70 +1,62 @@
-import { useState } from 'react';
-import Form from './assets/components/form';
-import Todo from './assets/components/todo';
+import { useEffect, useState } from 'react';
+import Todo from './components/todo';
 import './App.css';
-import Toggle from './assets/components/toggle';
+import Toggle from './components/toggle';
 const App = () => {
-  const [lists, setLists] = useState([
-    { name: 'Complete online Javascript course',id: 1, completed:false},
-    { name: 'Jog around the park 5x', id: 2,completed:true },
-    { name: '10 minutes meditation', id: 3,completed:false },
-    { name: 'Read for 1 hour', id: 4,completed:true },
-    { name: 'Pick up groceries', id: 5,completed:false },
-    { name: 'Complete Todo App on Frontend Mentor', id: 6 ,completed:true}
-  ]) 
-  const [newList, setNewList] = useState('')
-  const [count, setCount] = useState(lists.length || 0)
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(false);
+  const [input, setInput] = useState('');
 
-  // const [showAll, setShowAll] = useState(true)
-  // const [isActive, setIsActive] = useState(false)
+  const [lists, setLists] = useState(function() {
+    const storedList = localStorage.getItem("todo-list");
+    return storedList ? JSON.parse(storedList) : []
+  });
 
-  const addList = (e) => {
+  const listLength = lists.filter(item => item.completed === false).length; // derived state
+  
+  useEffect(function() {
+    localStorage.setItem("todo-list", JSON.stringify(lists));
+  }, [lists]);
+
+
+  function handleSubmit(e) {
     e.preventDefault();
-    const listExists = lists.some(list => list.name === newList);
-    if (listExists) {
-      alert(`${newList} is already added to Todo List`);
-    }else {
-    const listObject = {
-      name: newList
-    };
-    setLists(lists.concat(listObject));
-    setNewList(''); 
-    setCount(count + 1)
-  }
-}
-// if (lists === isChecked) {
-//   console.log('jhsdfeuifsdjhkjhs')
-// }else if (lists !== isChecked){
-//   console.log('alhamdulilah')
-// }
-  const handleListChange = (e) => {
-    setNewList(e.target.value);
-  };
 
-  const listToShow = lists.filter(list => list.name.toLowerCase())
+    if(!input) {
+      alert('An item needs to be entered 😊');
+    }
+
+    const newItem = {
+      name: input, id: Math.trunc(Math.random() * 1000000), completed: false,
+    }
+    setLists(prevLists => [...prevLists, newItem]);
+    setInput("");
+  }
 
   return (
     <div className='app'  data-theme = {isDark ? "dark" : "light"}>
-
       <div className='centered'>
         <div className='todo-app'>
           <h1>T O D O</h1>
           <div>
-          <Toggle isChecked = {isDark} handleChange = {() => setIsDark(!isDark)}/>
+          <Toggle isChecked={isDark} handleChange={() => setIsDark(!isDark)}/>
         </div>
         </div> 
     
         <div className='form'>
-          <Form addList = {addList} newList = {newList} handleListChange = {handleListChange}/>
+          <form onSubmit={handleSubmit} className="form-input">
+            <div className="circle"><p></p></div>
+            <div className="input">
+              <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Create a new todo..."/>
+            </div>
+          </form>
         </div>
        
         <div className='todo-list'>
-          <Todo listToShow = {listToShow}/> 
+          <Todo TodoItems={lists} lists={lists} setLists={setLists} /> 
         </div>
 
         <div>
-          <p>{count} items left</p>
+          <p>{listLength} items left</p>
         </div>
       </div>
     </div>
@@ -72,3 +64,21 @@ const App = () => {
 }
 
 export default App;
+
+
+
+
+
+
+/*
+
+[
+    { name: 'Complete online Javascript course',id: 1, completed:false},
+    { name: 'Jog around the park 5x', id: 2,completed:true },
+    { name: '10 minutes meditation', id: 3,completed:false },
+    { name: 'Read for 1 hour', id: 4,completed:true },
+    { name: 'Pick up groceries', id: 5,completed:false },
+    { name: 'Complete Todo App on Frontend Mentor', id: 6 ,completed:true}
+  ]
+
+  */

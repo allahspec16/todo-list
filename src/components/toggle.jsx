@@ -1,6 +1,6 @@
 import './toggle.css';
-import moon from '../images/icon-moon.svg';
-import sun from '../images/icon-sun.svg';
+import moon from '../assets/images/icon-moon.svg';
+import sun from '../assets/images/icon-sun.svg';
 const Toggle = (props) => {
   return ( 
     <div className='toggle-container' onClick={props.handleChange}>
